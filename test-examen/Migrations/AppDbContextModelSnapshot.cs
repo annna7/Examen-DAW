@@ -22,36 +22,19 @@ namespace test_examen.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ProductUser", b =>
+            modelBuilder.Entity("OrderProduct", b =>
                 {
-                    b.Property<Guid>("FavoriteProductsId")
+                    b.Property<Guid>("OrdersId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("SavedByUsersId")
+                    b.Property<Guid>("ProductsId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("FavoriteProductsId", "SavedByUsersId");
+                    b.HasKey("OrdersId", "ProductsId");
 
-                    b.HasIndex("SavedByUsersId");
+                    b.HasIndex("ProductsId");
 
-                    b.ToTable("SavedProducts", (string)null);
-                });
-
-            modelBuilder.Entity("test_examen.Models.BankAccount", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("BankAccounts");
+                    b.ToTable("OrderProducts", (string)null);
                 });
 
             modelBuilder.Entity("test_examen.Models.Order", b =>
@@ -59,6 +42,9 @@ namespace test_examen.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -84,6 +70,9 @@ namespace test_examen.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.ToTable("Products");
@@ -94,6 +83,9 @@ namespace test_examen.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -108,30 +100,19 @@ namespace test_examen.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ProductUser", b =>
+            modelBuilder.Entity("OrderProduct", b =>
                 {
+                    b.HasOne("test_examen.Models.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrdersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("test_examen.Models.Product", null)
                         .WithMany()
-                        .HasForeignKey("FavoriteProductsId")
+                        .HasForeignKey("ProductsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("test_examen.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("SavedByUsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("test_examen.Models.BankAccount", b =>
-                {
-                    b.HasOne("test_examen.Models.User", "User")
-                        .WithOne("BankAccount")
-                        .HasForeignKey("test_examen.Models.BankAccount", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("test_examen.Models.Order", b =>
@@ -147,9 +128,6 @@ namespace test_examen.Migrations
 
             modelBuilder.Entity("test_examen.Models.User", b =>
                 {
-                    b.Navigation("BankAccount")
-                        .IsRequired();
-
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

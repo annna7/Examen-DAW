@@ -10,25 +10,22 @@ public class AppDbContext : DbContext
     }
     
     public DbSet<User> Users { get; set; }
-    public DbSet<Product> Products { get; set; }
     public DbSet<Order> Orders { get; set; }
-    public DbSet<BankAccount> BankAccounts { get; set; }
+    public DbSet<Product> Products { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
-            .HasOne(u => u.BankAccount)
-            .WithOne(b => b.User)
-            .HasForeignKey<BankAccount>(b => b.UserId);
-        
+        // comanda: produs (M:M)
+        // utilizator: comanda (1:M)
+
         modelBuilder.Entity<User>()
             .HasMany(u => u.Orders)
             .WithOne(o => o.User)
             .HasForeignKey(o => o.UserId);
         
-        modelBuilder.Entity<User>()
-            .HasMany(u => u.FavoriteProducts)
-            .WithMany(p => p.SavedByUsers)
-            .UsingEntity(j => j.ToTable("SavedProducts"));
+        modelBuilder.Entity<Order>()
+            .HasMany(o => o.Products)
+            .WithMany(p => p.Orders)
+            .UsingEntity(j => j.ToTable("OrderProducts"));
     }
 }

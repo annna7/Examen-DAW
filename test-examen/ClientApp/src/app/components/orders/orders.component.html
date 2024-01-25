@@ -1,0 +1,33 @@
+<h1> Orders </h1>
+
+<h2> Past Orders </h2>
+<div *ngFor="let order of this.allOrders">
+  <p> {{ order.user.name }}, {{ order.user.email }} </p>
+  <ul>
+    <li *ngFor="let product of order.products">
+      {{ product.name }}
+    </li>
+  </ul>
+</div>
+
+<h2> New Order </h2>
+<mat-select placeholder="User">
+  <mat-option *ngFor="let user of this.allUsers" [value]="user" (onSelectionChange)="changeUser(user)">
+    {{ user.name }}
+  </mat-option>
+</mat-select>
+
+<mat-select placeholder="Product">
+  <mat-option (onSelectionChange)="addProductToCurrentList(product)" *ngFor="let product of this.allProducts" [value]="product">
+    {{ product.name }}
+  </mat-option>
+</mat-select>
+
+<h4> Current Products </h4>
+<ul>
+  <li *ngFor="let product of this.currentProducts">
+    {{ product.name }}
+  </li>
+</ul>
+
+<button (click)="createOrder()"> Create Order </button>

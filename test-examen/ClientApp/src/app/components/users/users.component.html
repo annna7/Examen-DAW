@@ -1,0 +1,14 @@
+<h1>Users</h1>
+<div [formGroup]="userForm">
+  <input type="text" formControlName="name" placeholder="name">
+  <input type="text" formControlName="email" placeholder="email">
+  <button (click)="addUser()">Add User</button>
+</div>
+<br>
+<h3> See Current Users </h3>
+<div *ngIf="!this.userList || this.userList.length == 0">
+  <h3> No Users </h3>
+</div>
+  <div *ngFor="let user of this.userList">
+    <p>{{user.name}} {{user.email}}</p>
+  </div>
